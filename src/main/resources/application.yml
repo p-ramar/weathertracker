@@ -1,0 +1,52 @@
+server:
+  servlet:
+    contextPath: /weather
+spring:
+  h2:
+    console:
+      enabled: true
+  profiles:
+    active: dev
+  jpa:
+    hibernate.ddl-auto: none
+    showSql: true
+    hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  cache.cache-names: weathertracker
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    validateOnMigrate: false
+    baselineOnMigrate: true
+logging:
+  file: /data/logs/WeatherTracker.log
+---
+spring:
+  profiles: dev
+  h2:
+    console:
+      enabled: true
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:cityweatherdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+weather:
+  api:
+    url: http://api.openweathermap.org/data/2.5/group
+    Key: <API-KEY-HERE>
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+---
+spring:
+  profiles: dev
+
+---
+spring:
+  profiles: prod
+
+
+
