@@ -6,6 +6,7 @@ import com.zip.weather.tracker.model.Weather;
 import com.zip.weather.tracker.model.WeatherResponse;
 import com.zip.weather.tracker.repository.CityConfigRepository;
 import com.zip.weather.tracker.repository.CityWeatherRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j 
 public class LoadWeatherFeedService {
 
   @Autowired CurrentWeatherData weatherData;
@@ -35,6 +37,7 @@ public class LoadWeatherFeedService {
             .map(weather -> createCityWeather(weather))
             .collect(Collectors.toList());
     cityWeatherRepository.saveAll(cityWeatherList);
+    log.info("Successfully saved weather data:{}",response);
     return response;
   }
 

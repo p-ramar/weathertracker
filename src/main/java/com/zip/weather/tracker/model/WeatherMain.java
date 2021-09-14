@@ -10,6 +10,7 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString
 public class WeatherMain {
   private BigDecimal temp;
   private BigDecimal feelsLike;

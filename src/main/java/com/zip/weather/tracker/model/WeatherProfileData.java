@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Builder
 @Setter
+@ToString
 public class WeatherProfileData {
 
   private Long id;

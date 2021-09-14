@@ -10,6 +10,7 @@ import java.util.List;
 @Builder
 @Setter
 @Getter
+@ToString
 public class WeatherResponse {
   private List<Weather> weather;
 

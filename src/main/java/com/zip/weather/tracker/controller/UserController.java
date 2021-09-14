@@ -2,6 +2,7 @@ package com.zip.weather.tracker.controller;
 
 import com.zip.weather.tracker.model.User;
 import com.zip.weather.tracker.service.UserRegistrationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 
 @RestController
 @Validated
+@Slf4j
 @RequestMapping("/user")
 public class UserController {
   @Autowired UserRegistrationService userService;
@@ -26,6 +28,7 @@ public class UserController {
    */
   @PostMapping(path = "/register", produces = "application/json", consumes = "application/json")
   public ResponseEntity<User> registerUser(@RequestBody @Valid User user) {
+    log.info("Registering user:"+user.toString());
     User userDetails = userService.registerUser(user);
     return new ResponseEntity<User>(userDetails, HttpStatus.OK);
   }

@@ -11,6 +11,7 @@ import com.zip.weather.tracker.repository.CityConfigRepository;
 import com.zip.weather.tracker.repository.ProfileCityMapRepository;
 import com.zip.weather.tracker.repository.UserRepository;
 import com.zip.weather.tracker.repository.WeatherProfileRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 import static com.zip.weather.tracker.exception.ErrorCodes.*;
 
 @Service
+@Slf4j
 public class WeatherProfileService {
 
   @Autowired CurrentWeatherData weatherData;
@@ -49,6 +51,7 @@ public class WeatherProfileService {
     weatherProfile.getProfileCityMaps().addAll(profileCityMapList);
     WeatherProfile updatedProfile = weatherProfileRepository.save(weatherProfile);
     weatherProfileData.setId(updatedProfile.getId());
+    log.info("Successfully created weather profile:{}",weatherProfileData);
     return weatherProfileData;
   }
 
@@ -85,7 +88,9 @@ public class WeatherProfileService {
             .orElseThrow(() -> new ApplicationException(PROFILE_NOT_FOUND));
     weatherProfile.setProfileName(name);
     WeatherProfile updatedProfile = weatherProfileRepository.save(weatherProfile);
-    return createWeatherProfileData(updatedProfile);
+    WeatherProfileData  weatherProfileData =createWeatherProfileData(updatedProfile);
+    log.info("Successfully updated weather profile:{}",weatherProfileData);
+    return weatherProfileData;
   }
 
   /**
@@ -101,7 +106,9 @@ public class WeatherProfileService {
             .orElseThrow(() -> new ApplicationException(PROFILE_NOT_FOUND));
     weatherProfile.getProfileCityMaps().add(createProfileCityMap(cityName, weatherProfile));
     WeatherProfile updatedProfile = weatherProfileRepository.save(weatherProfile);
-    return createWeatherProfileData(updatedProfile);
+    WeatherProfileData  weatherProfileData =createWeatherProfileData(updatedProfile);
+    log.info("Successfully added city to weather profile:{}",weatherProfileData);
+    return weatherProfileData;
   }
 
   /**
@@ -131,7 +138,9 @@ public class WeatherProfileService {
             .get();
     weatherProfile.getProfileCityMaps().remove(profileCityMap);
     WeatherProfile updatedProfile = weatherProfileRepository.save(weatherProfile);
-    return createWeatherProfileData(updatedProfile);
+    WeatherProfileData  weatherProfileData =createWeatherProfileData(updatedProfile);
+    log.info("Successfully deleted city from weather profile:{}",weatherProfileData);
+    return weatherProfileData;
   }
 
   private WeatherProfileData createWeatherProfileData(WeatherProfile updatedProfile) {
@@ -168,6 +177,7 @@ public class WeatherProfileService {
     weatherProfile.getProfileCityMaps().clear();
     weatherProfileRepository.save(weatherProfile);
     weatherProfileRepository.delete(weatherProfile);
+    log.info("Successfully deleted weather profile with id:{}",id);
   }
 
   /**
@@ -182,10 +192,12 @@ public class WeatherProfileService {
     List<WeatherProfile> weatherProfileList =
         weatherProfileRepository.findByUserId(Long.valueOf(userId));
     if (weatherProfileList.size() == 0) throw new ApplicationException(PROFILE_NOT_FOUND);
-    return weatherProfileList
+    List<WeatherProfileResponse> weatherProfileResponseList = weatherProfileList
         .stream()
         .map(weatherProfile -> createWeaterProfileResponse(weatherProfile))
         .collect(Collectors.toList());
+    log.info("Successfully retrieved weather profile list:{}",weatherProfileResponseList);
+    return weatherProfileResponseList;
   }
 
   /**
@@ -202,7 +214,9 @@ public class WeatherProfileService {
     WeatherProfile weatherProfile =
             weatherProfileRepository.findByIdAndUserId(Long.valueOf(profileId),Long.valueOf(userId))
                     .orElseThrow(() -> new ApplicationException(PROFILE_NOT_FOUND));
-    return createWeaterProfileResponse(weatherProfile);
+     WeatherProfileResponse weatherProfileResponse = createWeaterProfileResponse(weatherProfile);
+    log.info("Successfully retrieved weather profile:{}",weatherProfileResponse);
+    return weatherProfileResponse;
   }
 
   private WeatherProfileResponse createWeaterProfileResponse(WeatherProfile weatherProfile) {

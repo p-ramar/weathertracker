@@ -59,6 +59,7 @@ public class CurrentWeatherData {
       module.addDeserializer(WeatherResponse.class, new WeatherDeserializer());
       mapper.registerModule(module);
       weatherResponse = mapper.readValue(response.body().toString(), WeatherResponse.class);
+      log.info("Successfully pulled weather data from weather api");
     } catch (IOException | InterruptedException exception) {
       log.error("Exception while retriving weather data :", exception);
       throw new ApplicationException(SYSTEM_EXCEPTION);

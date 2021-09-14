@@ -3,6 +3,7 @@ package com.zip.weather.tracker.controller;
 import com.zip.weather.tracker.model.WeatherProfileData;
 import com.zip.weather.tracker.model.WeatherProfileResponse;
 import com.zip.weather.tracker.service.WeatherProfileService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @Validated
+@Slf4j
 @RequestMapping("/profile")
 public class WeatherProfileController {
   @Autowired WeatherProfileService weatherProfileService;
@@ -29,7 +31,8 @@ public class WeatherProfileController {
   @PostMapping(path = "/create", produces = "application/json", consumes = "application/json")
   public ResponseEntity<WeatherProfileData> createProfile(
       @RequestBody @Valid WeatherProfileData weatherProfile) {
-    WeatherProfileData weatherProfileDetails = weatherProfileService.createProfile(weatherProfile);
+      log.info("Creating profile:"+weatherProfile.toString());
+      WeatherProfileData weatherProfileDetails = weatherProfileService.createProfile(weatherProfile);
     return new ResponseEntity<WeatherProfileData>(weatherProfileDetails, HttpStatus.OK);
   }
 
@@ -43,7 +46,8 @@ public class WeatherProfileController {
   public ResponseEntity deleteProfile(
       @PathVariable(value = "id") @Pattern(regexp = "^[0-9]+$", message = "Invalid profile Id")
       final String id) {
-    weatherProfileService.deleteProfile(id);
+      log.info("Deleting profile:"+id);
+      weatherProfileService.deleteProfile(id);
     return ResponseEntity.noContent().build();
   }
 
@@ -66,7 +70,8 @@ public class WeatherProfileController {
       final String id,
       @PathVariable(value = "cityName") @NotBlank(message = "City name can't be null")
       final String cityName) {
-    WeatherProfileData weatherProfileDetails = weatherProfileService.addCity(id, cityName);
+      log.info("Adding city:{} to profile:{}",cityName,id);
+      WeatherProfileData weatherProfileDetails = weatherProfileService.addCity(id, cityName);
     return new ResponseEntity<WeatherProfileData>(weatherProfileDetails, HttpStatus.OK);
   }
 
@@ -88,7 +93,8 @@ public class WeatherProfileController {
       @Pattern(regexp = "^[0-9]+$", message = "Invalid profile Id")
       final String id,
       @PathVariable(value = "cityName") final String cityName) {
-    WeatherProfileData weatherProfileDetails = weatherProfileService.deleteCity(id, cityName);
+      log.info("Deleting city:{} from profile:{}",cityName,id);
+      WeatherProfileData weatherProfileDetails = weatherProfileService.deleteCity(id, cityName);
     return new ResponseEntity<WeatherProfileData>(weatherProfileDetails, HttpStatus.OK);
   }
 
@@ -110,7 +116,8 @@ public class WeatherProfileController {
       @Pattern(regexp = "^[0-9]+$", message = "Invalid profile Id")
       final String id,
       @PathVariable(value = "name") final String name) {
-    WeatherProfileData weatherProfileDetails = weatherProfileService.updateProfileName(id, name);
+      log.info("Updating profile:{} with name:{}",id,name);
+      WeatherProfileData weatherProfileDetails = weatherProfileService.updateProfileName(id, name);
     return new ResponseEntity<WeatherProfileData>(weatherProfileDetails, HttpStatus.OK);
   }
 
@@ -126,7 +133,8 @@ public class WeatherProfileController {
       @NotBlank(message = "User Id can't be null")
       @Pattern(regexp = "^[0-9]+$", message = "Invalid User Id")
       final String userId) {
-    List<WeatherProfileResponse> weatherProfileResponseList =
+      log.info("Retrieving  all weather profile for userId:{}",userId);
+      List<WeatherProfileResponse> weatherProfileResponseList =
         weatherProfileService.getUserProfiles(userId);
     return new ResponseEntity<>(weatherProfileResponseList, HttpStatus.OK);
   }
@@ -148,6 +156,7 @@ public class WeatherProfileController {
             @NotBlank(message = "Profile Id can't be null")
             @Pattern(regexp = "^[0-9]+$", message = "Invalid profile Id")
             final String profileId) {
+        log.info("Retrieving  weather profile:{} for userId:{}",profileId,userId);
         WeatherProfileResponse weatherProfileResponse =
                 weatherProfileService.getUserProfile(userId,profileId);
         return new ResponseEntity<>(weatherProfileResponse, HttpStatus.OK);

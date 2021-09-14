@@ -7,6 +7,7 @@ import com.zip.weather.tracker.model.Weather;
 import com.zip.weather.tracker.model.WeatherMain;
 import com.zip.weather.tracker.model.WeatherResponse;
 import com.zip.weather.tracker.repository.CityWeatherRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import static com.zip.weather.tracker.exception.ErrorCodes.CITY_NOT_FOUND;
 
 @Service
+@Slf4j
 public class WeatherReportService {
 
   @Autowired CurrentWeatherData weatherData;
@@ -37,6 +39,7 @@ public class WeatherReportService {
                 .stream()
                 .map(cityWeather -> createWeather(cityWeather))
                 .collect(Collectors.toList()));
+    log.info("Successfully retrieved weather report:{}",weatherResponse);
     return weatherResponse;
   }
 
@@ -50,6 +53,7 @@ public class WeatherReportService {
     CityWeather cityWeather =
         repository.findByCityName(city).orElseThrow(() -> new ApplicationException(CITY_NOT_FOUND));
     weatherResponse.getWeather().add(createWeather(cityWeather));
+    log.info("Successfully retrieved weather report:{}",weatherResponse);
     return weatherResponse;
   }
 

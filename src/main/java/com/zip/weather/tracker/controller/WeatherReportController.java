@@ -2,6 +2,7 @@ package com.zip.weather.tracker.controller;
 
 import com.zip.weather.tracker.model.WeatherResponse;
 import com.zip.weather.tracker.service.WeatherReportService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Validated
+@Slf4j
 @RequestMapping("/report")
 public class WeatherReportController {
 
@@ -24,6 +26,7 @@ public class WeatherReportController {
    */
   @GetMapping("/all")
   public ResponseEntity<WeatherResponse> getWeatherReport() {
+    log.info("Retrieving complete weather report for all cities.");
     WeatherResponse weatherResponse = weatherReportService.retrieveWeatherReport();
     return new ResponseEntity<WeatherResponse>(weatherResponse, HttpStatus.OK);
   }
@@ -36,6 +39,7 @@ public class WeatherReportController {
   @GetMapping("/city/{cityName}")
   public ResponseEntity<WeatherResponse> getWeatherReportByCity(
       @PathVariable(value = "cityName") final String cityName) {
+    log.info("Retrieving weather report for city:{}",cityName);
     WeatherResponse weatherResponse = weatherReportService.retrieveWeatherReportByCity(cityName);
     return new ResponseEntity<WeatherResponse>(weatherResponse, HttpStatus.OK);
   }
